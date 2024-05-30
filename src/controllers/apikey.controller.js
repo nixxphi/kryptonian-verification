@@ -1,6 +1,9 @@
+import UserModel from "../models/user.model.js";
+
+
 class ApiKeyController {
   constructor(userModel) {
-    this.userModel = userModel;
+    this.userModel = UserModel;
   }
 
   async generateApiKey(req, res) {
