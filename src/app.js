@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import redisClient from './configs/redis.config.js';
 import cors from 'cors';
 import morgan from 'morgan';
-import router from './routes/main.route.js';
+import mainRouter from './routes/main.route.js';
 
 const app = express();
 const port = process.env.PORT || 6900;
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(morgan('dev')); 
 
 // Routes setup
-app.use('/api/v1', router);
+app.use('/api/v1', mainRouter);
 
 // Function to connect to MongoDB with retries
 const connectToMongoDB = async () => {
