@@ -5,6 +5,7 @@ import fileController from '../controllers/file.controller.js';
 import imageController from '../controllers/image.controller.js';
 import apiKeyController from '../controllers/apiKey.controller.js';
 
+
 const router = express.Router();
 
 // Registration and Authentication
