@@ -2,13 +2,13 @@ import UserModel from '../models/user.model.js'
 
 class ImageService {
     async getAllImages() {
-        const users = await User.find({}, 'images');
+        const users = await UserModel.find({}, 'images');
         const images = users.flatMap(user => user.images);
         return images;
     }
 
     async getImage(id) {
-        const user = await User.findOne({ 'images._id': id }, { 'images.$': 1 });
+        const user = await UserModel.findOne({ 'images._id': id }, { 'images.$': 1 });
         if (!user) throw new Error('Image not found');
         return user.images[0];
     }
