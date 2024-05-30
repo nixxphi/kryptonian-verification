@@ -1,6 +1,5 @@
-// routes/index.js
 import express from 'express';
-import registrationController from '../controllers/registration.controller.js;
+import registrationController from '../controllers/registration.controller.js';
 import loginController from '../controllers/login.controller.js';
 import fileController from '../controllers/file.controller.js';
 import imageController from '../controllers/image.controller.js';
@@ -20,7 +19,7 @@ router.post('/invalidate-api-key', apiKeyController.invalidateApiKey);
 router.post('/upload', fileController.uploadFile);
 
 // Image Access
-router.get('/images', imageController.getAllImages);
-router.get('/images/:id', imageController.getImageById);
+router.get('/images', imageController.fetchAllImages);
+router.get('/images/:id', imageController.fetchImage);
 
 export default router;

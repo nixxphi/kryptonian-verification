@@ -4,8 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 class FileService {
-    async uploadFile(apiKey, file) {
-        // to validate the API key and file type
+    async upload(apiKey, file) {
         const user = await User.findOne({ apiKey });
         if (!user || !file.mimetype.startsWith('image/')) {
             throw new Error('Invalid API key or file type');

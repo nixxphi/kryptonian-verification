@@ -1,0 +1,46 @@
+{
+  "type": "module",
+  "name": "auth-krypt",
+  "version": "1.0.0",
+  "description": "Auth-Krypt is an application built for Kryptonians that allows secure registration, authentication, file uploads, and image access.",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nixxphi/kryptonian-verification.git"
+  },
+  "keywords": [
+    "authentication",
+    "2FA",
+    "kryptonians"
+  ],
+  "author": "chukwuma igwenagu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nixxphi/kryptonian-verification/issues"
+  },
+  "homepage": "https://github.com/nixxphi/kryptonian-verification#readme",
+  "dependencies": {
+    "@elasticemail/elasticemail-client": "^4.0.23",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "elasticemail": "^0.2.0",
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.0",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.13",
+    "path": "^0.12.7",
+    "redis": "^4.6.14"
+  },
+  "devDependencies": {
+    "@types/redis": "^4.0.11"
+  }
+}

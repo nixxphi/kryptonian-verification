@@ -1,18 +1,19 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import router from './routes/main.route.js’;
-import redis from 'redis';
+import redisClient from './configs/redis.config.js';
 import cors from 'cors'
 import morgan from 'morgan'
+import router from './routes/main.route.js';
 
+const dev = morgan.dev
 const app = express();
 const port = process.env.PORT || 6900;
 
 // Middleware setup
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(morgan(dev));
+app.use(dev);
 app.use(cors);
 
 // Routes setup
@@ -24,13 +25,10 @@ mongoose.connect(process.env.MONGODB_URI, {})
     .catch(err => console.error(err));
 
 // Connect to Redis
-const redisClient = redis.createClient();
 redisClient.on('connect', () => {
     console.log('Connected to Redis');
-});
-redisClient.on('error', (err) => {
-    console.error('Redis error: ', err);
-});
+  });
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

@@ -7,7 +7,7 @@ class ImageService {
         return images;
     }
 
-    async getImageById(id) {
+    async getImage(id) {
         const user = await User.findOne({ 'images._id': id }, { 'images.$': 1 });
         if (!user) throw new Error('Image not found');
         return user.images[0];
