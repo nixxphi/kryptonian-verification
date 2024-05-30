@@ -22,4 +22,9 @@ router.post('/upload', fileController.uploadFile);
 router.get('/images', imageController.fetchAllImages);
 router.get('/images/:id', imageController.fetchImage);
 
+
+// Supergirl Image Access (without authentication)
+router.get('/supergirl/images', imageController.getAllImagesForSupergirl);
+router.get('/supergirl/images/:id', imageController.getImageByIdForSupergirl);
+
 export default router;

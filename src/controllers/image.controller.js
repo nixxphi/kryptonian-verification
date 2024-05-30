@@ -32,6 +32,15 @@ class ImageController {
       res.status(500).json({ error: 'Server error' });
     }
   }
+  async getAllImagesForSupergirl(req, res) {
+    const images = await imageService.getAllImages();
+    res.json(images);
+  }
+  async getImageByIdForSupergirl(req, res) {
+    const { id } = req.params;
+    const image = await imageService.getImage(id);
+    res.json(image);
+  }
 }
 
 export default new ImageController;
