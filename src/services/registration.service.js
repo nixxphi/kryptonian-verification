@@ -10,13 +10,13 @@ class RegistrationService {
         }
 
         try {
-            // Check if the user already exists
+            // Checks for pre-existing users
             const existingUser = await UserModel.findOne({ email });
             if (existingUser) {
                 throw new Error('User already exists');
             }
 
-            // Hash the password 
+            // Hashes the password 
             const hashedPassword = await bcrypt.hash(password, 12);
             const user = new UserModel({ email, password: hashedPassword, isConfirmed: false });
             await user.save();
