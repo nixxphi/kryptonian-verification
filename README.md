@@ -30,7 +30,7 @@ Auth-Krypt is a Node.js application designed for Kryptonians that enables secure
 - Node.js (v14 or higher)
 - MongoDB
 - Redis
-- Elasticemail account for sending emails
+- Nodemailer for sending emails
 
 ## Installation
 
@@ -47,17 +47,13 @@ Auth-Krypt is a Node.js application designed for Kryptonians that enables secure
     npm install
     ```
 
-3. Set up your environment variables by creating a `.env` file:
-
-    ```sh
-    touch .env
-    ```
+3. Set up your environment variables by creating a `.env` file
 
 4. Add the following environment variables to the `.env` file:
 
     ```env
     PORT=3000
-    MONGO_URI
+    MONGODB_URI
     JWT_SECRET
     EMAIL_USER
     EMAIL_PASS
