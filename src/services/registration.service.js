@@ -5,6 +5,10 @@ import bcrypt from 'bcrypt';
 
 class RegistrationService {
     async register(email, password) {
+        if (!email || !password) {
+            throw new Error('Email and password are required');
+        }
+
         try {
             // Check if the user already exists
             const existingUser = await UserModel.findOne({ email });
@@ -12,25 +16,30 @@ class RegistrationService {
                 throw new Error('User already exists');
             }
 
-            const hashedPassword = await bcrypt.hash(password, 10);
+            // Hash the password 
+            const hashedPassword = await bcrypt.hash(password, 12);
             const user = new UserModel({ email, password: hashedPassword, isConfirmed: false });
             await user.save();
 
-            // Generate confirmation token
+            // Token generation
             const token = generateToken({ email });
 
-            // Send confirmation email
+            // The confirmation email
             await emailService.sendConfirmationEmail(email, token);
 
             return { message: 'Registration successful. Please check your email to confirm.' };
         } catch (error) {
-            throw new Error('Error during registration: ' + error.message);
+            if (error.name === 'ValidationError') {
+                throw new Error('Validation error: ' + error.message);
+            } else {
+                throw new Error('Error during registration: ' + error.message);
+            }
         }
     }
 
     async confirmEmail(token) {
         try {
-            // Verify the token
+            // Verifying the token
             const { email } = verifyToken(token);
             const user = await UserModel.findOneAndUpdate(
                 { email },
