@@ -24,13 +24,13 @@ class ImageController {
     // Methods for Supergirl to access images without authentication
     async getAllImagesForSupergirl(req, res) {
         const images = await imageService.getAllImages();
-        res.json(images);
+        return res.json(images);
     }
 
     async getImageByIdForSupergirl(req, res) {
         const { id } = req.params;
         const image = await imageService.getImage(id);
-        res.json(image);
+        return res.json(image);
     }
 }
 

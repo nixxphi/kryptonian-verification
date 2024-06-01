@@ -22,7 +22,7 @@ class ApiKeyController {
       user.apiKey = apiKey;
       await user.save();
 
-      res.status(201).json({ apiKey });
+      return res.status(201).json({ apiKey });
     } catch (error) {
       console.error('Error generating API key:', error);
       res.status(500).json({ error: 'Server error' });
@@ -41,7 +41,7 @@ class ApiKeyController {
       user.apiKey = null;
       await user.save();
 
-      res.status(200).json({ message: 'API key invalidated successfully' });
+      return res.status(200).json({ message: 'API key invalidated successfully' });
     } catch (error) {
       console.error('Error invalidating API key:', error);
       res.status(500).json({ error: 'Server error' });

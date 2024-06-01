@@ -1,13 +1,10 @@
-import ElasticEmail from 'elasticemail';
 import nodemailer from 'nodemailer';
 
-// ElasticEmail config
-const apiKey = process.env.EMAIL_API_KEY;
-const elasticClient = ElasticEmail.createClient({ apiKey });
+const MAX_RETRIES = 3; 
 
 // Nodemailer config
 const transporter = nodemailer.createTransport({
-  service: 'Elasticemail',
+  service: 'Elasticemail.lol', 
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -15,36 +12,24 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendEmail = async (to, subject, html) => {
-  const emailData = {
-    from: process.env.EMAIL_FROM,
-    to,
-    subject,
-    bodyHtml: html,
-  };
-
-  try {
-    // First it tries to send using ElasticEmail
-    await elasticClient.emails.send(emailData);
-    console.log(`Email sent to ${to} via ElasticEmail`);
-  } catch (elasticError) {
-    console.error('ElasticEmail error:', elasticError);
-
-    // Then falls back to Nodemailer if ElasticEmail fails
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      html,
-    };
-
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to,
+        subject,
+        html,
+      };
+
       await transporter.sendMail(mailOptions);
-      console.log(`Email sent to ${to} via Nodemailer`);
+      console.log(`Email sent to ${to} via Nodemailer (attempt ${attempt})`);
+      return; 
     } catch (nodemailerError) {
-      console.error('Nodemailer error:', nodemailerError);
-      throw new Error('Failed to send email via both ElasticEmail and Nodemailer');
+      console.error(`Nodemailer error (attempt ${attempt}):`, nodemailerError);
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); 
     }
   }
+  throw new Error('Failed to send email after all retries');
 };
 
 const sendConfirmationEmail = async (email, token) => {
@@ -58,9 +43,10 @@ const sendOtpEmail = async (email, otp) => {
   await sendEmail(email, 'Your OTP code', html);
 };
 
-const emailService = { 
-  sendConfirmationEmail, 
+const emailService = {
+  sendConfirmationEmail,
   sendOtpEmail,
-  sendEmail
+  sendEmail,
 };
+
 export default emailService;
