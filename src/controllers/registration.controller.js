@@ -5,7 +5,8 @@ class RegistrationController {
         try {
             const { email, password } = req.body;
             const result = await registrationService.register(email, password);
-            res.json(result);
+            console.log("success");
+            return res.json(result);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -15,7 +16,7 @@ class RegistrationController {
         try {
             const { token } = req.params;
             const result = await registrationService.confirmEmail(token);
-            res.json(result);
+            return res.json(result);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -5,7 +5,8 @@ class LoginController {
         try {
             const { email } = req.body;
             const result = await loginService.login(email);
-            res.json(result);
+            console.log("success")
+            return res.json(result);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -15,7 +16,7 @@ class LoginController {
         try {
             const { email, otp } = req.body;
             const result = await loginService.verifyOtp(email, otp);
-            res.json(result);
+            return res.json(result);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

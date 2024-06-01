@@ -9,7 +9,7 @@ const connectDB = async () => {
     try {
       await mongoose.connect(process.env.MONGODB_URI, {});
       console.log('MongoDB connected');
-      break; // Break out of the loop if connection is successful
+      break; 
     } catch (error) {
       console.error('MongoDB connection error:', error);
       retries--;
