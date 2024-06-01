@@ -12,7 +12,7 @@ class RegistrationService {
                 throw new Error('User already exists');
             }
 
-            const hashedPassword = await bcrypt.hash(password, 12);
+            const hashedPassword = await bcrypt.hash(password, 10);
             const user = new UserModel({ email, password: hashedPassword, isConfirmed: false });
             await user.save();
 
