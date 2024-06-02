@@ -37,5 +37,5 @@ app.use((err, req, res, next) => {
 
 // Start
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server active on port ${port}`);
 });
