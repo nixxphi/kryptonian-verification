@@ -21,7 +21,7 @@ class LoginService {
       const otp = generateOtp(); 
 
       await new Promise((resolve, reject) => {
-        redisClient.setex(`otp:${email}`, 300, otp, (err) => {
+        redisClient.setEx(`otp:${email}`, 300, otp, (err) => {
           if (err) {
             return reject(err);
           }
