@@ -33,7 +33,7 @@ const sendEmail = async (to, subject, html) => {
 };
 
 const sendConfirmationEmail = async (email, token) => {
-    const url = `${process.env.BASE_URL}/api/v1/confirm-email/${token}`;
+    const url = `${process.env.BASE_URL}/confirm-email/${token}`;
     const html = `<p>Click <a href="${url}">here</a> to confirm your email.</p>`;
     await sendEmail(email, 'Confirm your email', html);
 };
