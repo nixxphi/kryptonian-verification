@@ -27,7 +27,7 @@ class LoginService {
             if (!redisClient.isOpen) {
                 await redisClient.connect();
               }
-            await redisClient.setEx(`otp:${email}`, otp, 300);
+            redisClient.setEx(`otp:${email}`, otp, 300);
 
             // Send OTP via email
             await emailService.sendOtpEmail(email, otp);
