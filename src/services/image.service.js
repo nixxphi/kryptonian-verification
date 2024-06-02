@@ -7,6 +7,7 @@ class ImageService {
         return images;
     }
 
+// TODO : 
     async getImage(id) {
         const user = await UserModel.findOne({ 'images._id': id }, { 'images.$': 1 });
         if (!user) throw new Error('Image not found');

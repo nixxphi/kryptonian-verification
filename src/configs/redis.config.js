@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+import redis from 'redis';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -6,7 +6,7 @@ dotenv.config();
 let retries = 0;
 const MAX_RETRIES = 3;
 
-const redisClient = createClient({
+const redisClient = redis.createClient({
     password: process.env.REDIS_PASSWORD,
     socket: {
         host: process.env.REDIS_HOST,
@@ -31,10 +31,6 @@ redisClient.on('connect', () => {
 
 redisClient.on('error', (err) => {
     console.error('Redis error:', err.message, err.stack);
-});
-
-redisClient.on('end', () => {
-    console.log('Redis connection closed');
 });
 
 export default redisClient;
