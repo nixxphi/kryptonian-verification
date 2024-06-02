@@ -107,7 +107,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 **Request Body:**
 ```json
 {
-  "email": "user@example.com"
+  "email": "newguy@example.com"
 }
 ```
 
