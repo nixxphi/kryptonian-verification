@@ -15,19 +15,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
 
-// Routes setup
+// Routes 
 app.use('/api/v1', mainRouter);
 
-// Connect to MongoDB
+// Database connection
 connectDB();
-
-// Connect to Redis
-redisClient.on('connect', () => {
-  console.log('Connected to Redis');
-});
-redisClient.on('error', (err) => {
-  console.error('Redis connection error:', err);
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -35,7 +27,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
-// Start
+// Start server
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Server active on port ${port}`);
 });

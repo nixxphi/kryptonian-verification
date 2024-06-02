@@ -63,7 +63,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### User Registration
 
-**Endpoint:** `POST /api/v1/register`
+**Endpoint:** `POST /register`
 
 **Description:** Registers a new user and sends a confirmation email.
 
@@ -84,7 +84,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### Email Confirmation
 
-**Endpoint:** `GET /api/v1/confirm-email/:token`
+**Endpoint:** `GET /confirm-email/:token`
 
 **Description:** Confirms the user's email address.
 
@@ -100,7 +100,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### User Login
 
-**Endpoint:** `POST /api/v1/login`
+**Endpoint:** `POST /login`
 
 **Description:** Logs in the user and sends an OTP to their email.
 
@@ -120,7 +120,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### OTP Verification
 
-**Endpoint:** `POST /api/v1/verify-otp`
+**Endpoint:** `POST /verify-otp`
 
 **Description:** Verifies the OTP and provides a JWT token.
 
@@ -141,7 +141,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### API Key Generation
 
-**Endpoint:** `POST /api/v1/generate-api-key`
+**Endpoint:** `POST /generate-api-key`
 
 **Description:** Generates a new API key for the user.
 
@@ -161,7 +161,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### Invalidate API Key
 
-**Endpoint:** `POST /api/v1/invalidate-api-key`
+**Endpoint:** `POST /invalidate-api-key`
 
 **Description:** Invalidates an existing API key.
 
@@ -181,7 +181,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### File Upload
 
-**Endpoint:** `POST /api/v1/upload`
+**Endpoint:** `POST /upload`
 
 **Description:** Uploads an image file using an API key.
 
@@ -200,7 +200,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### Get All Images
 
-**Endpoint:** `GET /api/v1/images`
+**Endpoint:** `GET /images`
 
 **Description:** Retrieves all images. No authentication required for Supergirl.
 
@@ -218,7 +218,7 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 #### Get Single Image
 
-**Endpoint:** `GET /api/v1/images/:id`
+**Endpoint:** `GET /images/:id`
 
 **Description:** Retrieves a single image by ID. No authentication required for Supergirl.
 
