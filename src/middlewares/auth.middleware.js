@@ -26,12 +26,9 @@ export const verifyToken = (req, res, next) => {
 
 // Middleware to check if the user is Supergirl
 export const isSupergirl = (req, res, next) => {
-    const { email } = req.user;
-    
-    if (email !== 'supergirl@krypton.com') {
-        return res.status(403).json({ message: 'Access forbidden. You are not Supergirl.' });
+    if (req.user.role !== 'supergirl') {
+        return res.status(403).json({ message: 'Access denied. You are not Supergirl, go get a cape or something.' });
     }
-    
     next();
 };
 
@@ -50,5 +47,6 @@ const auth = {
     requireApiKey,
     isSupergirl,
     verifyToken
-}
+};
+
 export default auth;

@@ -1,9 +1,10 @@
 import UserModel from "../models/user.model.js";
-
+import ApiKeyService from "../services/apiKey.service.js";
 
 class ApiKeyController {
   constructor(userModel) {
     this.userModel = UserModel;
+    this.apiKeyService= ApiKeyService;
   }
 
   async generateApiKey(req, res) {
@@ -14,11 +15,7 @@ class ApiKeyController {
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-
-      // Generate a cryptographically secure random API key
-      const apiKey = crypto.randomBytes(32).toString('hex');
-
-      // Update the user's API key securely (consider hashing or encryption if needed)
+      await ApiKeyService.generateApiKey();
       user.apiKey = apiKey;
       await user.save();
 
