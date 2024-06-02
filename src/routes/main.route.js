@@ -3,7 +3,7 @@ import registrationController from '../controllers/registration.controller.js';
 import loginController from '../controllers/login.controller.js';
 import fileController from '../controllers/file.controller.js';
 import imageController from '../controllers/image.controller.js';
-import apiKeyController from '../controllers/apikey.controller.js';
+import ApiKeyController from '../controllers/apiKey.controller.js';
 import { verifyToken, requireApiKey, isSupergirl } from '../middlewares/auth.middleware.js';
 import welcomeMessage from '../middlewares/welcome.middleware.js';
 import multer from 'multer';
@@ -21,8 +21,8 @@ mainRouter.post('/login', loginController.login);
 mainRouter.post('/verify-otp', loginController.verifyOtp);
 
 // API Key Management
-mainRouter.post('/generate-api-key', verifyToken, apiKeyController.generateApiKey);
-mainRouter.post('/invalidate-api-key', verifyToken, apiKeyController.invalidateApiKey);
+mainRouter.post('/generate-api-key', verifyToken, ApiKeyController.generateApiKey);
+mainRouter.post('/invalidate-api-key', verifyToken, ApiKeyController.invalidateApiKey);
 
 // File Upload and Management
 mainRouter.post('/upload', requireApiKey, upload.single('file'), fileController.upload);
