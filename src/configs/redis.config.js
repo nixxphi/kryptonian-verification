@@ -33,8 +33,4 @@ redisClient.on('error', (err) => {
     console.error('Redis error:', err.message, err.stack);
 });
 
-redisClient.on('end', () => {
-    console.log('Redis connection closed');
-});
-
 export default redisClient;
