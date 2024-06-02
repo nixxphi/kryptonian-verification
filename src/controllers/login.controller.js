@@ -3,8 +3,8 @@ import loginService from '../services/login.service.js';
 class LoginController {
     async login(req, res) {
         try {
-            const { email } = req.body;
-            const result = await loginService.login(email);
+            const { email, password } = req.body;
+            const result = await loginService.login(email, password);
             console.log("success")
             return res.json(result);
         } catch (error) {
