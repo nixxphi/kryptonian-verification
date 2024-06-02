@@ -14,7 +14,7 @@ class LoginService {
                 throw new Error('User not found');
             }
 
-            // Compare the provided password with the stored hashed password
+            // Compare the provided password with the stored hashed password, which is being annoying g
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 throw new Error('Invalid credentials');
