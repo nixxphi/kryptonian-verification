@@ -65,13 +65,13 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 
 **Endpoint:** `POST /register`
 
-**Description:** Registers a new user and sends a confirmation email.
+**Description:** Registers a new user and sends a confirmation email. Passwords should include upper and lower case alphabets as well as a number.
 
 **Request Body:**
 ```json
 {
   "email": "user@example.com",
-  "password": "securepassword"
+  "password": "securePassword01"
 }
 ```
 
@@ -107,7 +107,8 @@ Auth-Krypt is an application built for Kryptonians that allows secure registrati
 **Request Body:**
 ```json
 {
-  "email": "newguy@example.com"
+  "email": "newguy@gmail.com",
+  "password":"Heartless1"
 }
 ```
 
