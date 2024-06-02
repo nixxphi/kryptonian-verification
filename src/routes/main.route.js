@@ -1,12 +1,12 @@
 import express from 'express';
-import registrationController from '../controllers/registration.controller.js';
-import loginController from '../controllers/login.controller.js';
+import multer from 'multer';
+import ApiKeyController from '../controllers/apiKey.controller.js';
 import fileController from '../controllers/file.controller.js';
 import imageController from '../controllers/image.controller.js';
-import ApiKeyController from '../controllers/apiKey.controller.js';
-import { verifyToken, requireApiKey, isSupergirl } from '../middlewares/auth.middleware.js';
+import loginController from '../controllers/login.controller.js';
+import registrationController from '../controllers/registration.controller.js';
+import { getUserIdFromToken, isSupergirl, requireApiKey, verifyToken } from '../middlewares/auth.middleware.js';
 import welcomeMessage from '../middlewares/welcome.middleware.js';
-import multer from 'multer';
 
 const mainRouter = express.Router();
 const upload = multer();
@@ -21,8 +21,18 @@ mainRouter.post('/login', loginController.login);
 mainRouter.post('/verify-otp', loginController.verifyOtp);
 
 // API Key Management
-mainRouter.post('/generate-api-key', verifyToken, ApiKeyController.generateApiKey);
 mainRouter.post('/invalidate-api-key', verifyToken, ApiKeyController.invalidateApiKey);
+mainRouter.post('/generate-api-key', auth.verifyToken, async (req, res) => {
+    try {
+        const token = req.headers['authorization'];
+        const userId = getUserIdFromToken(token);
+
+        const apiKey = await apiKeyService.generateApiKey(userId);
+        res.status(201).json({ apiKey });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // File Upload and Management
 mainRouter.post('/upload', requireApiKey, upload.single('file'), fileController.upload);
