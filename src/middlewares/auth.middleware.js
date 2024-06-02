@@ -1,5 +1,6 @@
 import UserModel from '../models/user.model.js';
 import { verifyToken as verifyJwtToken } from '../utils/token.utils.js';
+import jwt from 'jsonwebtoken';
 
 // Middleware to verify API key
 export const verifyApiKey = async (apiKey) => {
@@ -43,10 +44,21 @@ export const requireApiKey = async (req, res, next) => {
     next();
 };
 
+// Utility function to decode JWT and get userId
+export const getUserIdFromToken = (token) => {
+    try {
+        const decoded = jwt.decode(token);
+        return decoded.userId;
+    } catch (error) {
+        throw new Error('Failed to decode token.');
+    }
+};
+
 const auth = {
     requireApiKey,
     isSupergirl,
-    verifyToken
+    verifyToken,
+    getUserIdFromToken
 };
 
 export default auth;
