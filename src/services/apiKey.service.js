@@ -1,6 +1,8 @@
+import UserModel from "../models/user.model";
+
 class ApiKeyService {
     async generateApiKey(userId) {
-        const user = await User.findById(userId);
+        const user = await UserModel.findById(userId);
         if (!user) {
             throw new Error('User not found');
         }
@@ -14,7 +16,7 @@ class ApiKeyService {
     }
 
     async invalidateApiKey(apiKey) {
-        const user = await User.findOne({ apiKey });
+        const user = await UserModel.findOne({ apiKey });
         if (!user) {
             throw new Error('Invalid API key');
         }

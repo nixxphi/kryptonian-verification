@@ -1,5 +1,3 @@
-// welcome.middleware.js
-
 const welcomeMessage = (req, res, next) => {
     const routes = {
         "Registration and Authentication": {
