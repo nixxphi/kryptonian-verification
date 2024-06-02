@@ -24,7 +24,7 @@ class LoginService {
             const otp = generateOtp();
 
             // Store OTP in Redis with a 5 minute expiration time
-            await redisClient.set(`otp:${email}`, otp, 'EX', 300);
+            await redisClient.setEx(`otp:${email}`, otp, 300);
 
             // Send OTP via email
             await emailService.sendOtpEmail(email, otp);
