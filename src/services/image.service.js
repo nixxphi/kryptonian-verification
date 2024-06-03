@@ -1,26 +1,27 @@
 import UserModel from '../models/user.model.js';
 
 class ImageService {
-  async getAllImages(userId, page = 1, limit = 10) {
-    userId = userId && userId.trim();
+
+  async getAllImages(_id, page = 1, limit = 10) {
+    _id = _id && _id.trim();
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
 
     const skip = (page - 1) * limit;
 
-    if (!userId) throw new Error('Invalid user ID');
+    if (!_id) throw new Error('Invalid user ID');
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(_id);
     if (!user) throw new Error('User not found');
 
     const images = user.images.slice().reverse().slice(skip, skip + limit);
     return { images, hasMore: user.images.length > (page * limit) };
   }
 
-  async getImageById(userId, imageId) {
-    if (!userId || !imageId) throw new Error('Invalid input data');
+  async getImageById(_id, imageId) {
+    if (!_id || !imageId) throw new Error('Invalid input data');
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(_id);
     if (!user) throw new Error('User not found');
 
     const image = user.images.id(imageId);
@@ -29,10 +30,10 @@ class ImageService {
     return image;
   }
 
-  async getLastImage(userId) {
-    if (!userId) throw new Error('Invalid user ID');
+  async getLastImage(_id) {
+    if (!_id) throw new Error('Invalid user ID');
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(_id);
     if (!user) throw new Error('User not found');
 
     const lastImage = user.images[user.images.length - 1];
@@ -41,10 +42,10 @@ class ImageService {
     return lastImage;
   }
 
-  async createSharedImage(userId, imageData, sharedWith) {
-    if (!userId || !imageData) throw new Error('Invalid input data');
+  async createSharedImage(_id, imageData, sharedWith) {
+    if (!_id || !imageData) throw new Error('Invalid input data');
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(_id);
     if (!user) throw new Error('User not found');
 
     user.images.push(imageData);
@@ -61,10 +62,10 @@ class ImageService {
     return imageData;
   }
 
-  async getSharedImages(userId, targetUserId) {
-    if (!userId) throw new Error('Invalid user ID');
+  async getSharedImages(_id, targetUserId) {
+    if (!_id) throw new Error('Invalid user ID');
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(_id);
     if (!user) throw new Error('User not found');
 
     let sharedImages = [];
