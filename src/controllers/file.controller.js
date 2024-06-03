@@ -29,19 +29,19 @@ class FileController {
   }
 
   async download(req, res) {
-    const { userId, fileId } = req.params;
+    const { _id, fileId } = req.params;
     const apiKey = req.headers['x-api-key'];
 
     if (!apiKey) {
       return res.status(400).json({ error: 'API key is required' });
     }
 
-    if (!userId || !fileId) {
+    if (!_id || !fileId) {
       return res.status(400).json({ error: 'User ID and File ID are required' });
     }
 
     try {
-      const fileData = await fileService.downloadFile(apiKey, userId, fileId);
+      const fileData = await fileService.downloadFile(apiKey, _id, fileId);
       res.set('Content-Type', fileData.contentType);
       res.send(fileData.data);
     } catch (error) {
@@ -54,7 +54,7 @@ class FileController {
   }
 
   async update(req, res) {
-    const { userId, fileId } = req.params;
+    const { _id, fileId } = req.params;
     const apiKey = req.headers['x-api-key'];
     const { file } = req;
 
@@ -62,7 +62,7 @@ class FileController {
       return res.status(400).json({ error: 'API key is required' });
     }
 
-    if (!userId || !fileId) {
+    if (!_id || !fileId) {
       return res.status(400).json({ error: 'User ID and File ID are required' });
     }
 
@@ -71,7 +71,7 @@ class FileController {
     }
 
     try {
-      const result = await fileService.updateFile(apiKey, userId, fileId, file);
+      const result = await fileService.updateFile(apiKey, _id, fileId, file);
       res.status(200).json(result);
     } catch (error) {
       console.error('Error in FileController.update:', error.message);
@@ -83,19 +83,19 @@ class FileController {
   }
 
   async delete(req, res) {
-    const { userId, fileId } = req.params;
+    const { _id, fileId } = req.params;
     const apiKey = req.headers['x-api-key'];
 
     if (!apiKey) {
       return res.status(400).json({ error: 'API key is required' });
     }
 
-    if (!userId || !fileId) {
+    if (!_id || !fileId) {
       return res.status(400).json({ error: 'User ID and File ID are required' });
     }
 
     try {
-      const result = await fileService.deleteFile(apiKey, userId, fileId);
+      const result = await fileService.deleteFile(apiKey, _id, fileId);
       res.status(200).json(result);
     } catch (error) {
       console.error('Error in FileController.delete:', error.message);

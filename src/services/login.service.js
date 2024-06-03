@@ -9,7 +9,6 @@ class LoginService {
     async login(email, password) {
         try {
             console.log(1);
-            // Find the user by email
             const user = await UserModel.findOne({ email });
             if (!user) {
                 throw new Error('User not found');
@@ -25,11 +24,11 @@ class LoginService {
             // Generate OTP
             const otp = generateOtp();
             console.log(4, email);
-            // Store OTP in Redis with a 5 minute expiration time
+            // Store OTP in Redis 
             if (!redisClient.isOpen) {
                 await redisClient.connect();
               }
-            redisClient.setEx(`otp:${email}`, 300, otp);
+            redisClient.setEx(`otp:${email}`, 3600, otp);
             console.log(5, otp);
             // Send OTP via email
             await emailService.sendOtpEmail(email, otp);

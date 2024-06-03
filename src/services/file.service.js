@@ -38,24 +38,24 @@ class FileService {
     }
 
 
-  async downloadFile(userId, fileId) {
+  async downloadFile(_id, fileId) {
     try {
       const isValidApiKey = await verifyApiKey(apiKey);
       if (!isValidApiKey) {
         throw new Error('Invalid API key');
       }
 
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findById(_id);
       if (!user) {
         throw new Error('User not found');
       }
 
-      const file = user.images.id(fileId); // Assuming `images` is an array of objects with an `id` property
+      const file = user.images.id(fileId); 
       if (!file) {
         throw new Error('File not found');
       }
 
-      const filePath = path.join(__dirname, '..', 'uploads', file.filename); // Adjust path based on your storage location
+      const filePath = path.join(__dirname, '..', 'uploads', file.filename);
 
       const data = await fs.readFile(filePath);
       return { data, contentType: file.contentType };
@@ -72,7 +72,7 @@ class FileService {
         throw new Error('Invalid API key');
       }
 
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findById(_id);
       if (!user) {
         throw new Error('User not found');
       }
@@ -93,14 +93,14 @@ class FileService {
     }
   }
 
-  async deleteFile(userId, fileId) {
+  async deleteFile(_id, fileId) {
     try {
       const isValidApiKey = await verifyApiKey(apiKey);
       if (!isValidApiKey) {
         throw new Error('Invalid API key');
       }
 
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findById(_id);
       if (!user) {
         throw new Error('User not found');
       }

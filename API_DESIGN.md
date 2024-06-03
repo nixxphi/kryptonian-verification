@@ -8,7 +8,7 @@ Certainly! Below is a template for your updated API design document. This docume
 This API allows users to register, authenticate, manage files, and access images. It includes JWT token-based authentication and API key management.
 
 ### Base URL
-`https://yourapi.com/api`
+`https://kryptonian-verification.onrender.com/api/v1`
 
 ---
 
@@ -23,7 +23,7 @@ This API allows users to register, authenticate, manage files, and access images
   {
     "email": "user@example.com",
     "password": "password123",
-    "role": "user" // Optional
+    "role": "(kryptonian or supergirl, kryptonian as default so this is optional)" 
   }
   ```
 - **Response**:
@@ -58,7 +58,7 @@ This API allows users to register, authenticate, manage files, and access images
 - **Response**:
   ```json
   {
-    "token": "jwt-token"
+    "message": "OTP sent to your email"
   }
   ```
 
@@ -92,7 +92,12 @@ This API allows users to register, authenticate, manage files, and access images
 - **Response**:
   ```json
   {
-    "apiKey": "new-api-key"
+    "status": 200,
+    "success": true,
+    "message": "API Key generated successfully!",
+    "data": {
+        "apiKey"
+    }
   }
   ```
 
@@ -105,7 +110,12 @@ This API allows users to register, authenticate, manage files, and access images
 - **Response**:
   ```json
   {
-    "message": "API key invalidated successfully"
+    "status": 200,
+    "success": true,
+    "message": "",
+    "data": {
+        "message": "API key invalidated successfully"
+    }
   }
   ```
 
