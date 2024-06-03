@@ -5,8 +5,10 @@
   "description": "Auth-Krypt is an application built for Kryptonians that allows secure registration, authentication, file uploads, and image access.",
   "main": "src/app.js",
   "scripts": {
-    "test": "npm test",
-    "start": "node src/app.js"
+    "build": "npm i",
+    "start": "node -r dotenv/config src/app.js",
+    "dev": "nodemon -r dotenv/config src/app.js",
+    "test": "npm test"
   },
   "repository": {
     "type": "git",
@@ -43,7 +45,6 @@
     "redis-server": "^1.2.2"
   },
   "devDependencies": {
-    "@types/redis": "^4.0.11",
-    "elasticemail": "^0.2.0"
+    "nodemon": "^2.0.7"
   }
 }

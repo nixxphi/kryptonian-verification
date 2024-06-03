@@ -1,14 +1,14 @@
 import registrationService from '../services/registration.service.js';
-
+import { sendResponse } from '../utils/response.util.js';
 class RegistrationController {
     async register(req, res) {
         const { email, password } = req.body;
 
         try {
             const result = await registrationService.register(email, password);
-            res.status(201).json(result);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
+            return sendResponse(res, 201, true, result.message)
+        } catch (e) {
+            return sendResponse(res, 500, false, e.message)
         }
     }
 
@@ -17,9 +17,9 @@ class RegistrationController {
 
         try {
             const result = await registrationService.confirmEmail(token);
-            res.status(200).json(result);
+            return sendResponse(res, 200, true, result.message)
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            return sendResponse(res, 500, false, e.message)
         }
     }
 }

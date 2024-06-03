@@ -1,26 +1,20 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import { MONGODB_URI, DB_NAME as dbName } from './env.config.js';
 
-dotenv.config();
+export default (function database() {
+  const startdb = () => {
+    mongoose.set('strictQuery', false);
+    mongoose
+      .connect(MONGODB_URI, {})
+      .then(() => {
+        console.log('Successfully connected to the database...');
+      })
+      .catch((err) => {
+        console.error('There was an error connecting to zha database:', err.message);
+        console.log('Reconnecting to database...');
+        startdb();
+      });
+  };
 
-const connectDB = async () => {
-  let retries = 5;
-  while (retries) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, {});
-      console.log('MongoDB connected');
-      break; 
-    } catch (error) {
-      console.error('MongoDB connection error:', error);
-      retries--;
-      if (retries === 0) {
-        console.error('Failed to connect to MongoDB after multiple retries. Exiting...');
-        process.exit(1);
-      }
-      console.log(`Retrying MongoDB connection in 3 seconds (${retries} retries left)`);
-      await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait for 3 seconds before retrying
-    }
-  }
-};
-
-export default connectDB;
+  startdb();
+});

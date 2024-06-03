@@ -8,30 +8,32 @@ import redisClient from '../configs/redis.config.js';
 class LoginService {
     async login(email, password) {
         try {
+            console.log(1);
             // Find the user by email
             const user = await UserModel.findOne({ email });
             if (!user) {
                 throw new Error('User not found');
             }
+            console.log(2);
 
             // Compare the provided password with the stored hashed password, which is being annoying g
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 throw new Error('Invalid credentials');
             }
-
+            console.log(3);
             // Generate OTP
             const otp = generateOtp();
-
+            console.log(4, email);
             // Store OTP in Redis with a 5 minute expiration time
             if (!redisClient.isOpen) {
                 await redisClient.connect();
               }
             redisClient.setEx(`otp:${email}`, 300, otp);
-
+            console.log(5, otp);
             // Send OTP via email
             await emailService.sendOtpEmail(email, otp);
-
+            console.log(6);
             return { message: 'OTP sent to your email' };
         } catch (error) {
             console.error('Error during login:', error);
@@ -49,7 +51,7 @@ class LoginService {
 
             // Generate JWT token
             const user = await UserModel.findOne({ email });
-            const token = generateToken({ userId: user._id });
+            const token = generateToken({ _id: user._id });
 
             return { token };
         } catch (error) {

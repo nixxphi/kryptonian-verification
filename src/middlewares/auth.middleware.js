@@ -1,7 +1,7 @@
 import UserModel from '../models/user.model.js';
+import { sendResponse } from '../utils/response.util.js';
 import { verifyToken as verifyJwtToken } from '../utils/token.utils.js';
-import jwt from 'jsonwebtoken';
-
+import jwt from 'jsonwebtoken'
 // Middleware to verify API key
 export const verifyApiKey = async (apiKey) => {
     const user = await UserModel.findOne({ apiKey });
@@ -9,21 +9,23 @@ export const verifyApiKey = async (apiKey) => {
 };
 
 // Middleware to verify JWT token
-export const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    console.log("Authorization header: ", token);
-
-    if (!token) {
-        return res.status(401).json({ message: 'Access denied. No token provided.' });
-    }
-
+export default async (req, res, next) => {
     try {
-        const decoded = verifyJwtToken(token.split(' ')[1]); 
-        req.user = decoded;
+        const authHeaders = req.headers['authorization'] || req.header('Authorization');
+        const token = authHeaders && authHeaders.substring(0, 7) === 'Bearer ' ? authHeaders.replace('Bearer ', '') : req.cookies?.token;
+
+        if (!token) return sendResponse(res, 401, false, "Please login to continue.")
+
+        const decoded = verifyJwtToken(token)
+console.log('user:', decoded);
+        const user = await UserModel.findOne({ _id: decoded._id });
+        if (!user) return sendResponse(res, 404, false, 'User not found')
+
+        req.user = user;
         next();
-    } catch (ex) {
-        console.error("Token verification error: ", ex.message);
-        res.status(400).json({ message: 'Invalid token.' });
+    } catch (e) {
+        console.error("Token verification error: ", e.message);
+        return sendResponse(res, 500, false, e.message)
     }
 };
 
@@ -38,18 +40,10 @@ export const isSupergirl = (req, res, next) => {
 // Middleware to check if the user has a valid API key
 export const requireApiKey = async (req, res, next) => {
     const apiKey = req.headers['x-api-key'];
-    
+
     if (!apiKey || !await verifyApiKey(apiKey)) {
         return res.status(401).json({ message: 'Unauthorized. Invalid API key.' });
     }
-    
+
     next();
 };
-
-const auth = {
-    requireApiKey,
-    isSupergirl,
-    verifyToken
-};
-
-export default auth;

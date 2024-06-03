@@ -1,4 +1,5 @@
 import UserModel from "../models/user.model.js";
+import crypto from 'crypto'
 
 class ApiKeyService {
     async generateApiKey(userId) {
