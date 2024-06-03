@@ -22,7 +22,7 @@ mainRouter.post('/verify-otp', loginController.verifyOtp);
 
 // API Key Management
 mainRouter.post('/invalidate-api-key', verifyToken, ApiKeyController.invalidateApiKey);
-mainRouter.post('/generate-api-key', verifyToken, async (req, res) => {
+router.post('/generate-api-key', verifyToken, async (req, res) => {
     try {
         const token = req.headers['authorization'];
         const userId = getUserIdFromToken(token);
