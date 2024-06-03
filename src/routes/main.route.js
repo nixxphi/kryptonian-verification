@@ -1,11 +1,13 @@
+// routes/main.route.js
 import express from 'express';
 import multer from 'multer';
+import { getUserIdFromToken } from '../utils/token.utils.js'
 import ApiKeyController from '../controllers/apiKey.controller.js';
 import fileController from '../controllers/file.controller.js';
 import imageController from '../controllers/image.controller.js';
 import loginController from '../controllers/login.controller.js';
 import registrationController from '../controllers/registration.controller.js';
-import { getUserIdFromToken, isSupergirl, requireApiKey, verifyToken } from '../middlewares/auth.middleware.js';
+import { isSupergirl, requireApiKey, verifyToken } from '../middlewares/auth.middleware.js';
 import welcomeMessage from '../middlewares/welcome.middleware.js';
 
 const mainRouter = express.Router();
@@ -22,14 +24,17 @@ mainRouter.post('/verify-otp', loginController.verifyOtp);
 
 // API Key Management
 mainRouter.post('/invalidate-api-key', verifyToken, ApiKeyController.invalidateApiKey);
+
+// Updated route for generating API key
 mainRouter.post('/generate-api-key', verifyToken, async (req, res) => {
     try {
         const token = req.headers['authorization'];
-        const userId = getUserIdFromToken(token);
+        const userId = await getUserIdFromToken(token);
 
-        const apiKey = await ApiKeyController.generateApiKey(userId);
-        res.status(201).json({ apiKey });
+        const apiKey = await ApiKeyController.generateApiKey({ params: { userId } });
+        res.status(201).json(apiKey);
     } catch (error) {
+        console.error("Error generating API key:", error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -39,7 +44,6 @@ mainRouter.post('/upload', requireApiKey, upload.single('file'), fileController.
 mainRouter.get('/download/:userId/:fileId', requireApiKey, fileController.download);
 mainRouter.put('/update/:userId/:fileId', requireApiKey, upload.single('file'), fileController.update);
 mainRouter.delete('/delete/:userId/:fileId', requireApiKey, fileController.delete);
-
 
 // Image Access (authenticated users)
 mainRouter.get('/images/:userId', requireApiKey, imageController.getAllImages);
@@ -54,6 +58,5 @@ mainRouter.get('/supergirl/images/:userId/:imageId', isSupergirl, imageControlle
 mainRouter.get('/supergirl/last-image/:userId', isSupergirl, imageController.getLastImage);
 mainRouter.post('/supergirl/images/:userId/share', isSupergirl, imageController.createSharedImage);
 mainRouter.get('/supergirl/shared-images/:userId/:targetUserId', isSupergirl, imageController.getSharedImages);
-
 
 export default mainRouter;

@@ -57,6 +57,7 @@ class LoginService {
             throw new Error('Error verifying OTP: ' + error.message);
         }
     }
+    
 }
 
 export default new LoginService();

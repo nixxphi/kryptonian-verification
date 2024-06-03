@@ -1,49 +1,30 @@
-import UserModel from "../models/user.model.js";
-import ApiKeyService from "../services/apiKey.service.js";
+import apiKeyService from '../services/apiKey.service.js';
 
-class ApiKeyController {
-  constructor(userModel) {
-    this.userModel = UserModel;
-    this.apiKeyService= ApiKeyService;
-  }
-
-  async generateApiKey(req, res) {
-    const { email } = req.body;
-
+// Generate API Key
+const generateApiKey = async (req, res) => {
     try {
-      const user = await this.userModel.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      await ApiKeyService.generateApiKey();
-      user.apiKey = apiKey;
-      await user.save();
-
-      return res.status(201).json({ apiKey });
+        const userId = req.user.userId; 
+        const result = await apiKeyService.generateApiKey(userId);
+        res.status(200).json(result);
     } catch (error) {
-      console.error('Error generating API key:', error);
-      res.status(500).json({ error: 'Server error' });
+        console.error('Error generating API key:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
+};
 
-  async invalidateApiKey(req, res) {
-    const { email } = req.body;
-
+// Invalidating API Key
+const invalidateApiKey = async (req, res) => {
     try {
-      const user = await this.userModel.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      user.apiKey = null;
-      await user.save();
-
-      return res.status(200).json({ message: 'API key invalidated successfully' });
+        const apiKey = req.headers['x-api-key'];
+        const result = await apiKeyService.invalidateApiKey(apiKey);
+        res.status(200).json(result);
     } catch (error) {
-      console.error('Error invalidating API key:', error);
-      res.status(500).json({ error: 'Server error' });
+        console.error('Error invalidating API key:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  }
-}
+};
 
-export default new ApiKeyController;
+export default {
+    generateApiKey,
+    invalidateApiKey
+};

@@ -11,16 +11,18 @@ export const verifyApiKey = async (apiKey) => {
 // Middleware to verify JWT token
 export const verifyToken = (req, res, next) => {
     const token = req.headers['authorization'];
+    console.log("Authorization header: ", token);
 
     if (!token) {
         return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
 
     try {
-        const decoded = verifyJwtToken(token);
+        const decoded = verifyJwtToken(token.split(' ')[1]); 
         req.user = decoded;
         next();
     } catch (ex) {
+        console.error("Token verification error: ", ex.message);
         res.status(400).json({ message: 'Invalid token.' });
     }
 };
@@ -44,21 +46,10 @@ export const requireApiKey = async (req, res, next) => {
     next();
 };
 
-// Utility function to decode JWT and get userId
-export const getUserIdFromToken = (token) => {
-    try {
-        const decoded = jwt.decode(token);
-        return decoded.userId;
-    } catch (error) {
-        throw new Error('Failed to decode token.');
-    }
-};
-
 const auth = {
     requireApiKey,
     isSupergirl,
-    verifyToken,
-    getUserIdFromToken
+    verifyToken
 };
 
 export default auth;

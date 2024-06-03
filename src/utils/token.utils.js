@@ -8,4 +8,13 @@ export const verifyToken = (token) => {
     return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-export default { generateToken, verifyToken };
+export const getUserIdFromToken = (token) => {
+    if (token.startsWith('Bearer ')) {
+        token = token.slice(7, token.length).trimLeft();
+    }
+
+    const decoded = jwt.verify(token, config.jwtSecret);
+    return decoded.userId;
+};
+
+export default { generateToken, verifyToken, getUserIdFromToken };
