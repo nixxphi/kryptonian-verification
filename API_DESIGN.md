@@ -1,6 +1,3 @@
-Certainly! Below is a template for your updated API design document. This document outlines the main endpoints, their purposes, and the expected request/response formats. It's divided into sections for clarity, including Authentication, API Key Management, File Management, and Image Access.
-
----
 
 ## API Design Document
 

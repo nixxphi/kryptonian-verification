@@ -1,7 +1,3 @@
-Sure, here is the updated README with the latest changes integrated:
-
----
-
 # Auth-Krypt
 
 Auth-Krypt is a Node.js application designed for Kryptonians that enables secure registration, authentication, file uploads, and image access. This application leverages modern authentication mechanisms, such as Two-Factor Authentication (2FA) and API key-based file uploads.
