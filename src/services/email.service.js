@@ -27,11 +27,11 @@ const sendEmail = async (to, subject, content) => {
       <body style="font-family: sans-serif;">
         <div style="display: block; margin: auto; max-width: 600px;" class="main">
         <div>
-            <h1 style="font-size: 18px; font-weight: bold; margin-top: 20px">Hello, Kryptonian!</h1>
+            <h1 style="font-size: 18px; font-weight: bold; margin-top: 20px">Yo, Kryptonian!</h1>
             ${content}
               </div>
               <div>
-              <h1 style="font-size: 18px; font-weight: bold; margin-top: 20px">The LearnWave Team</h1>
+              <h1 style="font-size: 18px; font-weight: bold; margin-top: 20px">Auth.Krypt... Authentic Kryptonians.</h1>
               </div>
               </div>
               <!-- Example of invalid for email html/css, will be detected by Mailtrap: -->
