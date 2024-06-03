@@ -1,264 +1,349 @@
-Auth-Krypt API Design Document
-
-### Table of Contents
-1. [Introduction](#1-introduction)
-2. [Authentication and Authorization](#2-authentication-and-authorization)
-3. [File Upload Service](#3-file-upload-service)
-4. [Image Access](#4-image-access)
-5. [API Key Management](#5-api-key-management)
-6. [Endpoints](#6-endpoints)
-    - [User Registration](#user-registration)
-    - [Email Confirmation](#email-confirmation)
-    - [User Login](#user-login)
-    - [OTP Verification](#otp-verification)
-    - [API Key Generation](#api-key-generation)
-    - [Invalidate API Key](#invalidate-api-key)
-    - [File Upload](#file-upload)
-    - [Get All Images](#get-all-images)
-    - [Get Single Image](#get-single-image)
-7. [Error Handling](#7-error-handling)
-8. [Security Considerations](#8-security-considerations)
+Certainly! Below is a template for your updated API design document. This document outlines the main endpoints, their purposes, and the expected request/response formats. It's divided into sections for clarity, including Authentication, API Key Management, File Management, and Image Access.
 
 ---
 
-### 1. Introduction
+## API Design Document
 
-Auth-Krypt is an application built for Kryptonians that allows secure registration, authentication, file uploads, and image access. The API is designed to support the following functionalities:
-- User registration and email confirmation.
-- Two-Factor Authentication (2FA) using OTP.
-- Secure file uploads with API key authentication.
-- Access to images without authentication for specific users (e.g., Supergirl).
-- Management of API keys for users.
+### Overview
+This API allows users to register, authenticate, manage files, and access images. It includes JWT token-based authentication and API key management.
 
-### 2. Authentication and Authorization
+### Base URL
+`https://yourapi.com/api`
 
-**Authentication:** 
-- Users register with an email address.
-- Upon registration, users receive a confirmation email with a link to confirm their email address.
-- Users log in using their email address. An OTP is sent to their email for 2FA.
-- Users verify the OTP to receive a JWT token for subsequent requests.
+---
 
-**Authorization:**
-- File uploads and certain actions require an API key.
-- API keys are unique to each user and can be invalidated.
+### Authentication Endpoints
 
-### 3. File Upload Service
+#### Register User
+- **URL**: `/register`
+- **Method**: `POST`
+- **Description**: Registers a new user.
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password123",
+    "role": "user" // Optional
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "User registered successfully"
+  }
+  ```
 
-- Files can be uploaded using an API key.
-- Only image files are allowed.
-- Images are stored as Base64 strings in the database for easy sharing.
-- Files are deleted from the system after being stored.
+#### Confirm Email
+- **URL**: `/confirm-email/:token`
+- **Method**: `GET`
+- **Description**: Confirms the user's email using a token.
+- **Response**:
+  ```json
+  {
+    "message": "Email confirmed successfully"
+  }
+  ```
 
-### 4. Image Access
+#### Login
+- **URL**: `/login`
+- **Method**: `POST`
+- **Description**: Authenticates the user and returns a JWT token.
+- **Request Body**:
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password123"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "token": "jwt-token"
+  }
+  ```
 
-- Specific users (e.g., Supergirl) can access images without authentication.
-- Images can be accessed either individually or in bulk.
+#### Verify OTP
+- **URL**: `/verify-otp`
+- **Method**: `POST`
+- **Description**: Verifies the OTP sent to the user.
+- **Request Body**:
+  ```json
+  {
+    "otp": "123456"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "OTP verified successfully"
+  }
+  ```
 
-### 5. API Key Management
+---
 
-- Users can generate and invalidate API keys.
-- API keys are issued once and never shown again to the user after generation.
+### API Key Management
 
-### 6. Endpoints
-
-#### User Registration
-
-**Endpoint:** `POST /register`
-
-**Description:** Registers a new user and sends a confirmation email. Passwords should include upper and lower case alphabets as well as a number.
-
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "password": "securePassword01"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Registration successful. Please check your email to confirm."
-}
-```
-
-#### Email Confirmation
-
-**Endpoint:** `GET /confirm-email/:token`
-
-**Description:** Confirms the user's email address.
-
-**Request Parameters:**
-- `token`: The email confirmation token sent to the user's email.
-
-**Response:**
-```json
-{
-  "message": "Email confirmed successfully."
-}
-```
-
-#### User Login
-
-**Endpoint:** `POST /login`
-
-**Description:** Logs in the user and sends an OTP to their email.
-
-**Request Body:**
-```json
-{
-  "email": "newguy@gmail.com",
-  "password":"Heartless1"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "OTP sent to your email."
-}
-```
-
-#### OTP Verification
-
-**Endpoint:** `POST /verify-otp`
-
-**Description:** Verifies the OTP and provides a JWT token.
-
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "otp": "800855"
-}
-```
-
-**Response:**
-```json
-{
-  "token": "jwt-token"
-}
-```
-
-#### API Key Generation
-
-**Endpoint:** `POST /generate-api-key`
-
-**Description:** Generates a new API key for the user.
-
-**Request Body:**
-```json
-{
-  "userId": "user-id"
-}
-```
-
-**Response:**
-```json
-{
-  "apiKey": "generated-api-key"
-}
-```
+#### Generate API Key
+- **URL**: `/generate-api-key`
+- **Method**: `POST`
+- **Description**: Generates a new API key for the authenticated user.
+- **Headers**:
+  - `Authorization`: `Bearer jwt-token`
+- **Response**:
+  ```json
+  {
+    "apiKey": "new-api-key"
+  }
+  ```
 
 #### Invalidate API Key
+- **URL**: `/invalidate-api-key`
+- **Method**: `POST`
+- **Description**: Invalidates the user's API key.
+- **Headers**:
+  - `Authorization`: `Bearer jwt-token`
+- **Response**:
+  ```json
+  {
+    "message": "API key invalidated successfully"
+  }
+  ```
 
-**Endpoint:** `POST /invalidate-api-key`
+---
 
-**Description:** Invalidates an existing API key.
+### File Management
 
-**Request Body:**
-```json
-{
-  "apiKey": "api-key-to-invalidate"
-}
-```
+#### Upload File
+- **URL**: `/upload`
+- **Method**: `POST`
+- **Description**: Uploads a file.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Request Body**:
+  - `file`: File to upload
+- **Response**:
+  ```json
+  {
+    "message": "File uploaded successfully",
+    "fileUrl": "url-to-file"
+  }
+  ```
 
-**Response:**
-```json
-{
-  "message": "API key invalidated successfully."
-}
-```
+#### Download File
+- **URL**: `/download/:userId/:fileId`
+- **Method**: `GET`
+- **Description**: Downloads a file.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Response**: File data
 
-#### File Upload
+#### Update File
+- **URL**: `/update/:userId/:fileId`
+- **Method**: `PUT`
+- **Description**: Updates an existing file.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Request Body**:
+  - `file`: New file to upload
+- **Response**:
+  ```json
+  {
+    "message": "File updated successfully"
+  }
+  ```
 
-**Endpoint:** `POST /upload`
+#### Delete File
+- **URL**: `/delete/:userId/:fileId`
+- **Method**: `DELETE`
+- **Description**: Deletes a file.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Response**:
+  ```json
+  {
+    "message": "File deleted successfully"
+  }
+  ```
 
-**Description:** Uploads an image file using an API key.
+---
 
-**Request Headers:**
-- `apiKey`: The user's API key.
-
-**Request Body:**
-- Multipart form data with an image file.
-
-**Response:**
-```json
-{
-  "message": "File uploaded successfully"
-}
-```
+### Image Access
 
 #### Get All Images
+- **URL**: `/images/:userId`
+- **Method**: `GET`
+- **Description**: Retrieves all images for a user.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Response**:
+  ```json
+  [
+    {
+      "imageId": "image-id",
+      "url": "image-url",
+      ...
+    }
+  ]
+  ```
 
-**Endpoint:** `GET /images`
-
-**Description:** Retrieves all images. No authentication required for Supergirl.
-
-**Response:**
-```json
-[
+#### Get Image By ID
+- **URL**: `/images/:userId/:imageId`
+- **Method**: `GET`
+- **Description**: Retrieves a specific image by ID.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Response**:
+  ```json
   {
-    "id": "image-id",
-    "data": "base64-string",
-    "contentType": "image/png"
-  },
-  ...
-]
-```
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+  ```
 
-#### Get Single Image
+#### Get Last Image
+- **URL**: `/last-image/:userId`
+- **Method**: `GET`
+- **Description**: Retrieves the last uploaded image for a user.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Response**:
+  ```json
+  {
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+  ```
 
-**Endpoint:** `GET /images/:id`
+#### Create Shared Image
+- **URL**: `/images/:userId/share`
+- **Method**: `POST`
+- **Description**: Shares an image with another user.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Request Body**:
+  ```json
+  {
+    "imageData": "data",
+    "sharedWith": "targetUserId"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Image shared successfully"
+  }
+  ```
 
-**Description:** Retrieves a single image by ID. No authentication required for Supergirl.
+#### Get Shared Images
+- **URL**: `/shared-images/:userId/:targetUserId`
+- **Method**: `GET`
+- **Description**: Retrieves images shared with another user.
+- **Headers**:
+  - `x-api-key`: `api-key`
+- **Response**:
+  ```json
+  [
+    {
+      "imageId": "image-id",
+      "url": "image-url",
+      ...
+    }
+  ]
+  ```
 
-**Request Parameters:**
-- `id`: The ID of the image.
+### Supergirl Image Access
 
-**Response:**
-```json
-{
-  "id": "image-id",
-  "data": "base64-string",
-  "contentType": "image/png"
-}
-```
+#### Get All Images for Supergirl
+- **URL**: `/supergirl/images/:userId`
+- **Method**: `GET`
+- **Description**: Retrieves all images for a user without authentication.
+- **Middleware**: `isSupergirl`
+- **Response**:
+  ```json
+  [
+    {
+      "imageId": "image-id",
+      "url": "image-url",
+      ...
+    }
+  ]
+  ```
 
-### 7. Error Handling
+#### Get Image By ID for Supergirl
+- **URL**: `/supergirl/images/:userId/:imageId`
+- **Method**: `GET`
+- **Description**: Retrieves a specific image by ID without authentication.
+- **Middleware**: `isSupergirl`
+- **Response**:
+  ```json
+  {
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+  ```
 
-- All endpoints should return appropriate HTTP status codes and error messages.
-- Common error codes include:
-  - `400 Bad Request`: For validation errors.
-  - `401 Unauthorized`: For authentication failures.
-  - `403 Forbidden`: For authorization failures.
-  - `404 Not Found`: For missing resources.
-  - `500 Internal Server Error`: For server-side errors.
+#### Get Last Image for Supergirl
+- **URL**: `/supergirl/last-image/:userId`
+- **Method**: `GET`
+- **Description**: Retrieves the last uploaded image for a user without authentication.
+- **Middleware**: `isSupergirl`
+- **Response**:
+  ```json
+  {
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+  ```
 
-**Example Error Response:**
-```json
-{
-  "error": "Invalid OTP"
-}
-```
+#### Create Shared Image for Supergirl
+- **URL**: `/supergirl/images/:userId/share`
+- **Method**: `POST`
+- **Description**: Shares an image with another user without authentication.
+- **Middleware**: `isSupergirl`
+- **Request Body**:
+  ```json
+  {
+    "imageData": "data",
+    "sharedWith": "targetUserId"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Image shared successfully"
+  }
+  ```
 
-### 8. Security Considerations
+#### Get Shared Images for Supergirl
+- **URL**: `/supergirl/shared-images/:userId/:targetUserId`
+- **Method**: `GET`
+- **Description**: Retrieves images shared with another user without authentication.
+- **Middleware**: `isSupergirl`
+- **Response**:
+  ```json
+  [
+    {
+      "imageId": "image-id",
+      "url": "image-url",
+      ...
+    }
+  ]
+  ```
 
-- Passwords should be hashed using a secure algorithm (e.g., bcrypt).
-- Tokens and API keys should be securely generated and stored.
-- Sensitive data (e.g., tokens, API keys) should not be exposed in logs.
-- Use HTTPS for all API requests to ensure secure communication.
+---
 
-### Conclusion
+### Error Handling
+All responses will include a status code and a message indicating success or failure. Common status codes include:
+- `200 OK`: Request succeeded.
+- `201 Created`: Resource created successfully.
+- `400 Bad Request`: The request could not be understood or was missing required parameters.
+- `401 Unauthorized`: Authentication failed or user does not have permissions.
+- `403 Forbidden`: Access denied.
+- `404 Not Found`: Resource not found.
+- `500 Internal Server Error`: An error occurred on the server.
 
-This is a comprehensive overview of the endpoints, functionalities, and design considerations for Auth-Krypt. It ensures secure user authentication, efficient file uploads, and easy access to image resources while adhering to best practices in RESTful API design and security.
+---

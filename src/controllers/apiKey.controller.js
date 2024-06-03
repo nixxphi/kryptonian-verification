@@ -1,30 +1,26 @@
 import apiKeyService from '../services/apiKey.service.js';
+import { sendResponse } from '../utils/response.util.js';
 
 // Generate API Key
-const generateApiKey = async (req, res) => {
+export const generateApiKey = async (req, res) => {
     try {
-        const userId = req.user.userId; 
+        const userId = req.user._id; 
         const result = await apiKeyService.generateApiKey(userId);
-        res.status(200).json(result);
-    } catch (error) {
-        console.error('Error generating API key:', error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
+        return sendResponse(res, 200, true, 'API Key generated successfully!', result)
+    } catch (e) {
+        console.error('Error generating API key:', e);
+        return sendResponse(res, 500, false, e.message)
     }
 };
 
 // Invalidating API Key
-const invalidateApiKey = async (req, res) => {
+export const invalidateApiKey = async (req, res) => {
     try {
         const apiKey = req.headers['x-api-key'];
         const result = await apiKeyService.invalidateApiKey(apiKey);
-        res.status(200).json(result);
-    } catch (error) {
-        console.error('Error invalidating API key:', error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
+        return sendResponse(res, 200, true, '', result)
+    } catch (e) {
+        console.error('Error invalidating API key:', e);
+        return sendResponse(res, 500, false, e.message)
     }
-};
-
-export default {
-    generateApiKey,
-    invalidateApiKey
 };

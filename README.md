@@ -1,3 +1,6 @@
+Sure, here is the updated README with the latest changes integrated:
+
+---
 
 # Auth-Krypt
 
@@ -37,7 +40,7 @@ Auth-Krypt is a Node.js application designed for Kryptonians that enables secure
 1. Clone the repository:
 
     ```sh
-    git clone
+    git clone <repository_url>
     cd auth-krypt
     ```
 
@@ -53,10 +56,10 @@ Auth-Krypt is a Node.js application designed for Kryptonians that enables secure
 
     ```env
     PORT=3000
-    MONGODB_URI
-    JWT_SECRET
-    EMAIL_USER
-    EMAIL_PASS
+    MONGODB_URI=mongodb://localhost:27017/authkrypt
+    JWT_SECRET=your_jwt_secret
+    EMAIL_USER=your_email_user
+    EMAIL_PASS=your_email_password
     BASE_URL=http://localhost:3000
     ```
 
@@ -116,7 +119,8 @@ Once the application is up and running, you can use tools like Postman or cURL t
 **Request Body:**
 ```json
 {
-  "email": "user@example.com"
+  "email": "user@example.com",
+  "password": "securepassword"
 }
 ```
 
@@ -146,16 +150,14 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-### API Key Generation
+### API Key Management
+
+#### Generate API Key
 
 **Endpoint:** `POST /api/v1/generate-api-key`
 
-**Request Body:**
-```json
-{
-  "userId": "user-id"
-}
-```
+**Headers:**
+- `Authorization`: `Bearer jwt-token`
 
 **Response:**
 ```json
@@ -164,16 +166,12 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-### Invalidate API Key
+#### Invalidate API Key
 
 **Endpoint:** `POST /api/v1/invalidate-api-key`
 
-**Request Body:**
-```json
-{
-  "apiKey": "api-key-to-invalidate"
-}
-```
+**Headers:**
+- `Authorization`: `Bearer jwt-token`
 
 **Response:**
 ```json
@@ -182,12 +180,14 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-### File Upload
+### File Management
+
+#### File Upload
 
 **Endpoint:** `POST /api/v1/upload`
 
-**Request Headers:**
-- `apiKey`: The user's API key.
+**Headers:**
+- `x-api-key`: `api-key`
 
 **Request Body:**
 - Multipart form data with an image file.
@@ -199,36 +199,223 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-### Get All Images
+#### Download File
 
-**Endpoint:** `GET /api/v1/images`
+**Endpoint:** `GET /api/v1/download/:userId/:fileId`
+
+**Headers:**
+- `x-api-key`: `api-key`
+
+**Response:** File data
+
+#### Update File
+
+**Endpoint:** `PUT /api/v1/update/:userId/:fileId`
+
+**Headers:**
+- `x-api-key`: `api-key`
+
+**Request Body:**
+- Multipart form data with an image file.
+
+**Response:**
+```json
+{
+  "message": "File updated successfully"
+}
+```
+
+#### Delete File
+
+**Endpoint:** `DELETE /api/v1/delete/:userId/:fileId`
+
+**Headers:**
+- `x-api-key`: `api-key`
+
+**Response:**
+```json
+{
+  "message": "File deleted successfully"
+}
+```
+
+### Image Access
+
+#### Get All Images
+
+**Endpoint:** `GET /api/v1/images/:userId`
+
+**Headers:**
+- `x-api-key`: `api-key`
 
 **Response:**
 ```json
 [
   {
-    "id": "image-id",
-    "data": "base64-string",
-    "contentType": "image/png"
-  },
-  ...
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
 ]
 ```
 
-### Get Single Image
+#### Get Image By ID
 
-**Endpoint:** `GET /api/v1/images/:id`
+**Endpoint:** `GET /api/v1/images/:userId/:imageId`
 
-**Request Parameters:**
-- `id`: The ID of the image.
+**Headers:**
+- `x-api-key`: `api-key`
 
 **Response:**
 ```json
 {
-  "id": "image-id",
-  "data": "base64-string",
-  "contentType": "image/png"
+  "imageId": "image-id",
+  "url": "image-url",
+  ...
 }
+```
+
+#### Get Last Image
+
+**Endpoint:** `GET /api/v1/last-image/:userId`
+
+**Headers:**
+- `x-api-key`: `api-key`
+
+**Response:**
+```json
+{
+  "imageId": "image-id",
+  "url": "image-url",
+  ...
+}
+```
+
+#### Create Shared Image
+
+**Endpoint:** `POST /api/v1/images/:userId/share`
+
+**Headers:**
+- `x-api-key`: `api-key`
+
+**Request Body:**
+```json
+{
+  "imageData": "data",
+  "sharedWith": "targetUserId"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Image shared successfully"
+}
+```
+
+#### Get Shared Images
+
+**Endpoint:** `GET /api/v1/shared-images/:userId/:targetUserId`
+
+**Headers:**
+- `x-api-key`: `api-key`
+
+**Response:**
+```json
+[
+  {
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+]
+```
+
+### Supergirl Image Access
+
+#### Get All Images for Supergirl
+
+**Endpoint:** `GET /api/v1/supergirl/images/:userId`
+
+**Middleware**: `isSupergirl`
+
+**Response:**
+```json
+[
+  {
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+]
+```
+
+#### Get Image By ID for Supergirl
+
+**Endpoint:** `GET /api/v1/supergirl/images/:userId/:imageId`
+
+**Middleware**: `isSupergirl`
+
+**Response:**
+```json
+{
+  "imageId": "image-id",
+  "url": "image-url",
+  ...
+}
+```
+
+#### Get Last Image for Supergirl
+
+**Endpoint:** `GET /api/v1/supergirl/last-image/:userId`
+
+**Middleware**: `isSupergirl`
+
+**Response:**
+```json
+{
+  "imageId": "image-id",
+  "url": "image-url",
+  ...
+}
+```
+
+#### Create Shared Image for Supergirl
+
+**Endpoint:** `POST /api/v1/supergirl/images/:userId/share`
+
+**Middleware**: `isSupergirl`
+
+**Request Body:**
+```json
+{
+  "imageData": "data",
+  "sharedWith": "targetUserId"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Image shared successfully"
+}
+```
+
+#### Get Shared Images for Supergirl
+
+**Endpoint:** `GET /api/v1/supergirl/shared-images/:userId/:targetUserId`
+
+**Middleware**: `isSupergirl`
+
+**Response:**
+```json
+[
+  {
+    "imageId": "image-id",
+    "url": "image-url",
+    ...
+  }
+]
 ```
 
 ## Dependencies
@@ -270,7 +457,9 @@ Example error response:
 ## Security Considerations
 
 - Passwords are hashed using a secure algorithm (e.g., bcrypt).
-- Tokens and API keys are securely generated and stored.
+- Tokens
+
+ and API keys are securely generated and stored.
 - Sensitive data (e.g., tokens, API keys) are not exposed in logs.
 - HTTPS is used for all API requests to ensure secure communication.
 
@@ -278,9 +467,8 @@ Example error response:
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
-## Licensing
+## License
 
 This project is licensed under the MIT License.
 
 ---
-

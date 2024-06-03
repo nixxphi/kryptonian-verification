@@ -2,12 +2,12 @@
 import express from 'express';
 import multer from 'multer';
 import { getUserIdFromToken } from '../utils/token.utils.js'
-import ApiKeyController from '../controllers/apiKey.controller.js';
+import { invalidateApiKey, generateApiKey } from '../controllers/apiKey.controller.js';
 import fileController from '../controllers/file.controller.js';
 import imageController from '../controllers/image.controller.js';
 import loginController from '../controllers/login.controller.js';
 import registrationController from '../controllers/registration.controller.js';
-import { isSupergirl, requireApiKey, verifyToken } from '../middlewares/auth.middleware.js';
+import authenticate,{ isSupergirl, requireApiKey } from '../middlewares/auth.middleware.js';
 import welcomeMessage from '../middlewares/welcome.middleware.js';
 
 const mainRouter = express.Router();
@@ -23,21 +23,10 @@ mainRouter.post('/login', loginController.login);
 mainRouter.post('/verify-otp', loginController.verifyOtp);
 
 // API Key Management
-mainRouter.post('/invalidate-api-key', verifyToken, ApiKeyController.invalidateApiKey);
+mainRouter.post('/invalidate-api-key', authenticate, invalidateApiKey);
 
 // Updated route for generating API key
-mainRouter.post('/generate-api-key', verifyToken, async (req, res) => {
-    try {
-        const token = req.headers['authorization'];
-        const userId = await getUserIdFromToken(token);
-
-        const apiKey = await ApiKeyController.generateApiKey({ params: { userId } });
-        res.status(201).json(apiKey);
-    } catch (error) {
-        console.error("Error generating API key:", error);
-        res.status(500).json({ message: error.message });
-    }
-});
+mainRouter.post('/generate-api-key', authenticate, generateApiKey);
 
 // File Upload and Management
 mainRouter.post('/upload', requireApiKey, upload.single('file'), fileController.upload);
