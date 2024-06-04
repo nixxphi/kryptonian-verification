@@ -52,7 +52,7 @@ Auth-Krypt is a Node.js application designed for Kryptonians that enables secure
 
     ```env
     PORT=3000
-    MONGODB_URI=mongodb://localhost:27017/authkrypt
+    MONGODB_URI=your__mongodb__uri
     JWT_SECRET=your_jwt_secret
     EMAIL_USER=your_email_user
     EMAIL_PASS=your_email_password
@@ -75,177 +75,175 @@ Once the application is up and running, you can use tools like Postman or cURL t
 
 ## API Endpoints
 
-### User Registration
-
-**Endpoint:** `POST /api/v1/register`
-
-**Request Body:**
-```json
+### Register User
+URL: /register
+Method: POST
+Description: Registers a new user.
+Request Body:
+```
 {
   "email": "user@example.com",
-  "password": "securepassword"
+  "password": "password123",
+  "role": "(kryptonian or supergirl, kryptonian as default so this is optional)" 
 }
 ```
 
-**Response:**
-```json
+Response:
+```
 {
-  "message": "Registration successful. Please check your email to confirm."
+  "message": "User registered successfully"
 }
 ```
 
-### Email Confirmation
-
-**Endpoint:** `GET /api/v1/confirm-email/:token`
-
-**Request Parameters:**
-- `token`: The email confirmation token sent to the user's email.
-
-**Response:**
-```json
+### Confirm Email
+URL: /confirm-email/:token
+Method: GET
+Description: Confirms the user's email using a token.
+Response:
+```
 {
-  "message": "Email confirmed successfully."
+  "message": "Email confirmed successfully"
 }
 ```
 
-### User Login
-
-**Endpoint:** `POST /api/v1/login`
-
-**Request Body:**
-```json
+### Login
+URL: /login
+Method: POST
+Description: Authenticates the user and returns a JWT token.
+Request Body:
+```
 {
   "email": "user@example.com",
-  "password": "securepassword"
+  "password": "password123"
 }
 ```
 
-**Response:**
-```json
+Response:
+```
 {
-  "message": "OTP sent to your email."
+  "message": "OTP sent to your email"
 }
 ```
 
-### OTP Verification
-
-**Endpoint:** `POST /api/v1/verify-otp`
-
-**Request Body:**
-```json
+### Verify OTP
+URL: /verify-otp
+Method: POST
+Description: Verifies the OTP sent to the user.
+Request Body:
+```
 {
-  "email": "user@example.com",
   "otp": "123456"
 }
 ```
-
-**Response:**
-```json
+Response:
+```
 {
-  "token": "jwt-token"
+  "message": "OTP verified successfully"
 }
 ```
 
-### API Key Management
+## API Key Management
 
-#### Generate API Key
-
-**Endpoint:** `POST /api/v1/generate-api-key`
-
-**Headers:**
-- `Authorization`: `Bearer jwt-token`
-
-**Response:**
-```json
+### Generate API Key
+URL: /generate-api-key
+Method: POST
+Description: Generates a new API key for the authenticated user.
+Headers:
+Authorization: Bearer jwt-token
+Response:
+```
 {
-  "apiKey": "generated-api-key"
+  "status": 200,
+  "success": true,
+  "message": "API Key generated successfully!",
+  "data": {
+      "apiKey"
+  }
 }
 ```
 
-#### Invalidate API Key
-
-**Endpoint:** `POST /api/v1/invalidate-api-key`
-
-**Headers:**
-- `Authorization`: `Bearer jwt-token`
-
-**Response:**
-```json
+### Invalidate API Key
+URL: /invalidate-api-key
+Method: POST
+Description: Invalidates the user's API key.
+Headers:
+Authorization: Bearer jwt-token
+Response:
+```
 {
-  "message": "API key invalidated successfully."
+  "status": 200,
+  "success": true,
+  "message": "",
+  "data": {
+      "message": "API key invalidated successfully"
+  }
 }
 ```
 
 ### File Management
-
-#### File Upload
-
-**Endpoint:** `POST /api/v1/upload`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Request Body:**
-- Multipart form data with an image file.
-
-**Response:**
-```json
-{
-  "message": "File uploaded successfully"
-}
+Upload File
+URL: /upload
+Method: POST
+Description: Uploads a file.
+Headers:
+x-api-key: api-key
+Request Body:
+file: File to upload
+Response:
 ```
 
-#### Download File
+{
+  "message": "File uploaded successfully",
+  "fileUrl": "url-to-file"
+}
+```
+### Download File
+URL: /download/:userId/:fileId
+Method: GET
+Description: Downloads a file.
+Headers:
+x-api-key: api-key
+Response: File data
 
-**Endpoint:** `GET /api/v1/download/:userId/:fileId`
+### Update File
+URL: /update/:userId/:fileId
+Method: PUT
+Description: Updates an existing file.
+Headers:
+x-api-key: api-key
+Request Body:
+file: New file to upload
+Response:
+```
 
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Response:** File data
-
-#### Update File
-
-**Endpoint:** `PUT /api/v1/update/:userId/:fileId`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Request Body:**
-- Multipart form data with an image file.
-
-**Response:**
-```json
 {
   "message": "File updated successfully"
 }
 ```
 
-#### Delete File
 
-**Endpoint:** `DELETE /api/v1/delete/:userId/:fileId`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Response:**
-```json
+### Delete File
+URL: /delete/:userId/:fileId
+Method: DELETE
+Description: Deletes a file.
+Headers:
+x-api-key: api-key
+Response:
+```
 {
   "message": "File deleted successfully"
 }
 ```
+## Image Access
 
-### Image Access
-
-#### Get All Images
-
-**Endpoint:** `GET /api/v1/images/:userId`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Response:**
-```json
+### Get All Images
+URL: /images/:userId
+Method: GET
+Description: Retrieves all images for a user.
+Headers:
+x-api-key: api-key
+Response:
+```
 [
   {
     "imageId": "image-id",
@@ -254,16 +252,28 @@ Once the application is up and running, you can use tools like Postman or cURL t
   }
 ]
 ```
-
-#### Get Image By ID
-
-**Endpoint:** `GET /api/v1/images/:userId/:imageId`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Response:**
-```json
+### Get Image By ID
+URL: /images/:userId/:imageId
+Method: GET
+Description: Retrieves a specific image by ID.
+Headers:
+x-api-key: api-key
+Response:
+```
+{
+  "imageId": "image-id",
+  "url": "image-url",
+  ...
+}
+```
+### Get Last Image
+URL: /last-image/:userId
+Method: GET
+Description: Retrieves the last uploaded image for a user.
+Headers:
+x-api-key: api-key
+Response:
+```
 {
   "imageId": "image-id",
   "url": "image-url",
@@ -271,53 +281,37 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-#### Get Last Image
 
-**Endpoint:** `GET /api/v1/last-image/:userId`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Response:**
-```json
-{
-  "imageId": "image-id",
-  "url": "image-url",
-  ...
-}
+### Create Shared Image
+URL: /images/:userId/share
+Method: POST
+Description: Shares an image with another user.
+Headers:
+x-api-key: api-key
+Request Body:
 ```
-
-#### Create Shared Image
-
-**Endpoint:** `POST /api/v1/images/:userId/share`
-
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Request Body:**
-```json
 {
   "imageData": "data",
   "sharedWith": "targetUserId"
 }
 ```
-
-**Response:**
-```json
+Response:
+```
 {
   "message": "Image shared successfully"
 }
 ```
 
-#### Get Shared Images
 
-**Endpoint:** `GET /api/v1/shared-images/:userId/:targetUserId`
+### Get Shared Images
+URL: /shared-images/:userId/:targetUserId
+Method: GET
+Description: Retrieves images shared with another user.
+Headers:
+x-api-key: api-key
+Response:
+```
 
-**Headers:**
-- `x-api-key`: `api-key`
-
-**Response:**
-```json
 [
   {
     "imageId": "image-id",
@@ -327,16 +321,18 @@ Once the application is up and running, you can use tools like Postman or cURL t
 ]
 ```
 
-### Supergirl Image Access
 
-#### Get All Images for Supergirl
+## Supergirl Image Access
 
-**Endpoint:** `GET /api/v1/supergirl/images/:userId`
 
-**Middleware**: `isSupergirl`
+### Get All Images for Supergirl
+URL: /supergirl/images/:userId
+Method: GET
+Description: Retrieves all images for a user without authentication.
+Middleware: isSupergirl
+Response:
+```
 
-**Response:**
-```json
 [
   {
     "imageId": "image-id",
@@ -346,14 +342,15 @@ Once the application is up and running, you can use tools like Postman or cURL t
 ]
 ```
 
-#### Get Image By ID for Supergirl
 
-**Endpoint:** `GET /api/v1/supergirl/images/:userId/:imageId`
+### Get Image By ID for Supergirl
+URL: /supergirl/images/:userId/:imageId
+Method: GET
+Description: Retrieves a specific image by ID without authentication.
+Middleware: isSupergirl
+Response:
+```
 
-**Middleware**: `isSupergirl`
-
-**Response:**
-```json
 {
   "imageId": "image-id",
   "url": "image-url",
@@ -361,14 +358,15 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-#### Get Last Image for Supergirl
 
-**Endpoint:** `GET /api/v1/supergirl/last-image/:userId`
+### Get Last Image for Supergirl
+URL: /supergirl/last-image/:userId
+Method: GET
+Description: Retrieves the last uploaded image for a user without authentication.
+Middleware: isSupergirl
+Response:
+```
 
-**Middleware**: `isSupergirl`
-
-**Response:**
-```json
 {
   "imageId": "image-id",
   "url": "image-url",
@@ -376,35 +374,36 @@ Once the application is up and running, you can use tools like Postman or cURL t
 }
 ```
 
-#### Create Shared Image for Supergirl
+### Create Shared Image for Supergirl
+URL: /supergirl/images/:userId/share
+Method: POST
+Description: Shares an image with another user without authentication.
+Middleware: isSupergirl
+Request Body:
+```
 
-**Endpoint:** `POST /api/v1/supergirl/images/:userId/share`
-
-**Middleware**: `isSupergirl`
-
-**Request Body:**
-```json
 {
   "imageData": "data",
   "sharedWith": "targetUserId"
 }
 ```
+Response:
+```
 
-**Response:**
-```json
 {
   "message": "Image shared successfully"
 }
 ```
 
-#### Get Shared Images for Supergirl
 
-**Endpoint:** `GET /api/v1/supergirl/shared-images/:userId/:targetUserId`
+### Get Shared Images for Supergirl
+URL: /supergirl/shared-images/:userId/:targetUserId
+Method: GET
+Description: Retrieves images shared with another user without authentication.
+Middleware: isSupergirl
+Response:
+```
 
-**Middleware**: `isSupergirl`
-
-**Response:**
-```json
 [
   {
     "imageId": "image-id",
