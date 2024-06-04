@@ -5,12 +5,15 @@ export default (function database() {
   const startdb = () => {
     mongoose.set('strictQuery', false);
     mongoose
-      .connect(MONGODB_URI, {})
+      .connect(MONGODB_URI, {
+        useUnifiedTopology: true,
+        dbName,
+      })
       .then(() => {
-        console.log('Successfully connected to the database...');
+        console.log('Database connection successful');
       })
       .catch((err) => {
-        console.error('There was an error connecting to zha database:', err.message);
+        console.error('There was an error connecting to database:', err.message);
         console.log('Reconnecting to database...');
         startdb();
       });

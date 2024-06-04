@@ -3,7 +3,7 @@ import { verifyApiKey, isSupergirl } from '../middlewares/auth.middleware.js';
 
 class ImageController {
     async getAllImages(req, res) {
-        const { _id } = req.params;
+        const { userId } = req.params;
         const { page, limit } = req.query;
 
         if (!req.user || req.user.role !== 'supergirl') {
@@ -14,7 +14,7 @@ class ImageController {
         }
 
         try {
-            const result = await imageService.getAllImages(_id, page, limit);
+            const result = await imageService.getAllImages(userId, page, limit);
             res.status(200).json(result);
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -22,7 +22,7 @@ class ImageController {
     }
 
     async getImageById(req, res) {
-        const { _id, imageId } = req.params;
+        const { userId, imageId } = req.params;
 
         if (!req.user || req.user.role !== 'supergirl') {
             const apiKey = req.headers['x-api-key'];
@@ -32,7 +32,7 @@ class ImageController {
         }
 
         try {
-            const image = await imageService.getImageById(_id, imageId);
+            const image = await imageService.getImageById(userId, imageId);
             res.status(200).json(image);
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -40,7 +40,7 @@ class ImageController {
     }
 
     async getLastImage(req, res) {
-        const { _id } = req.params;
+        const { userId } = req.params;
 
         if (!req.user || req.user.role !== 'supergirl') {
             const apiKey = req.headers['x-api-key'];
@@ -50,7 +50,7 @@ class ImageController {
         }
 
         try {
-            const lastImage = await imageService.getLastImage(_id);
+            const lastImage = await imageService.getLastImage(userId);
             res.status(200).json(lastImage);
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -58,7 +58,7 @@ class ImageController {
     }
 
     async createSharedImage(req, res) {
-        const { _id } = req.params;
+        const { userId } = req.params;
         const { imageData, sharedWith } = req.body;
 
         if (!req.user || req.user.role !== 'supergirl') {
@@ -69,7 +69,7 @@ class ImageController {
         }
 
         try {
-            const result = await imageService.createSharedImage(_id, imageData, sharedWith);
+            const result = await imageService.createSharedImage(userId, imageData, sharedWith);
             res.status(201).json(result);
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -77,7 +77,7 @@ class ImageController {
     }
 
     async getSharedImages(req, res) {
-        const { _id, targetUserId } = req.params;
+        const { userId, targetUserId } = req.params;
 
         if (!req.user || req.user.role !== 'supergirl') {
             const apiKey = req.headers['x-api-key'];
@@ -87,7 +87,7 @@ class ImageController {
         }
 
         try {
-            const result = await imageService.getSharedImages(_id, targetUserId);
+            const result = await imageService.getSharedImages(userId, targetUserId);
             res.status(200).json(result);
         } catch (error) {
             res.status(400).json({ error: error.message });

@@ -22,7 +22,7 @@ class ApiKeyService {
             throw new Error('Invalid API key');
         }
 
-        // to invalidate the API key
+        // to invalidate API key
         user.apiKey = null;
         await user.save();
 

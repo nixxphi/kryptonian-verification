@@ -29,7 +29,7 @@ console.log('user:', decoded);
     }
 };
 
-// Middleware to check if the user is Supergirl
+// Middleware to check if user is Supergirl
 export const isSupergirl = (req, res, next) => {
     if (req.user.role !== 'supergirl') {
         return res.status(403).json({ message: 'Access denied. You are not Supergirl, go get a cape or something.' });
@@ -37,7 +37,7 @@ export const isSupergirl = (req, res, next) => {
     next();
 };
 
-// Middleware to check if the user has a valid API key
+// Middleware to check if user has a valid API key
 export const requireApiKey = async (req, res, next) => {
     const apiKey = req.headers['x-api-key'];
 

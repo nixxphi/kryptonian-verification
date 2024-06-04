@@ -1,7 +1,7 @@
 import apiKeyService from '../services/apiKey.service.js';
 import { sendResponse } from '../utils/response.util.js';
 
-// Generate API Key
+// Generate an API Key
 export const generateApiKey = async (req, res) => {
     try {
         const userId = req.user._id; 
@@ -13,12 +13,12 @@ export const generateApiKey = async (req, res) => {
     }
 };
 
-// Invalidating API Key
+// Invalidating an API Key
 export const invalidateApiKey = async (req, res) => {
     try {
         const apiKey = req.headers['x-api-key'];
         const result = await apiKeyService.invalidateApiKey(apiKey);
-        return sendResponse(res, 200, true, '', result)
+        return sendResponse(res, 200, true, 'API key validated successfully.', result)
     } catch (e) {
         console.error('Error invalidating API key:', e);
         return sendResponse(res, 500, false, e.message)
