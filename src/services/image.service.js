@@ -1,7 +1,6 @@
 import UserModel from '../models/user.model.js';
 
 class ImageService {
-
   async getAllImages(_id, page = 1, limit = 10) {
     _id = _id && _id.trim();
     page = parseInt(page) || 1;

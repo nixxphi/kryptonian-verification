@@ -10,3 +10,7 @@ export const DB_NAME = process.env.DB_NAME
 export const BASE_URL = process.env.BASE_URL
 export const JWT_SECRET = process.env.JWT_SECRET
 export const PORT = process.env.PORT
+export const DOCS_URL = process.env.DOCS_URL
+export const CLOUD_NAME = process.env.CLOUD_NAME
+export const API_KEY = process.env.API_KEY
+export const API_SECRET = process.env.API_SECRET

@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
+import autopopulate from 'mongoose-autopopulate'
 
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  images: [{ 
-    data: Buffer, 
-    contentType: String, 
-    description: String 
-  }],
+  images: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "File",
+    autopopulate: true
+  },
   isConfirmed: { type: Boolean, default: false },
   role: { 
     type: String, 
@@ -17,5 +18,5 @@ const userSchema = new mongoose.Schema({
   apiKey: { type: String },
 }, { timestamps: true });
 
-const UserModel = mongoose.model('User', userSchema);
-export default UserModel;
+userSchema.plugin(autopopulate);
+export default mongoose.model('User', userSchema);

@@ -1,10 +1,11 @@
 import fs from 'fs/promises'; 
 import path from 'path';
 import UserModel from '../models/user.model.js';
+import FileModel from '../models/file.model.js';
 import { verifyApiKey } from '../middlewares/auth.middleware.js';
 
 class FileService {
-  async upload(apiKey, file) {
+  async upload(apiKey, reqFile) {
     try {
         const isValidApiKey = await verifyApiKey(apiKey);
         if (!isValidApiKey) {
@@ -16,16 +17,12 @@ class FileService {
           throw new Error('User not found');
         }
   
-        if (!file.mimetype.match(/^(image\/bmp|image\/gif|image\/jpeg|image\/png|image\/tiff|image\/webp|image\/x-icon|image\/svg\+xml)$/)) {
-          throw new Error('Invalid file type. Only common image formats allowed.');
-        }
-  
-        const base64Image = Buffer.from(file.buffer).toString('base64');
-  
-        user.images.push({ data: base64Image, contentType: file.mimetype });
+        const file = await FileModel.create(reqFile)
+        console.log('file:', file, user);
+        user.images.push(file._id);
         await user.save();
   
-        return { message: 'File uploaded successfully' };
+        return { images: user.images, message: 'File uploaded successfully' };
       } catch (error) {
         console.error('Error in FileService.upload:', error.message);
   
@@ -38,7 +35,7 @@ class FileService {
     }
 
 
-  async downloadFile(_id, fileId) {
+  async downloadFile(apiKey, _id, fileId) {
     try {
       const isValidApiKey = await verifyApiKey(apiKey);
       if (!isValidApiKey) {
@@ -50,22 +47,20 @@ class FileService {
         throw new Error('User not found');
       }
 
-      const file = user.images.id(fileId); 
+      const files = user.images.filter(image => image._id.toString() === fileId);
+      const file = files[0]
       if (!file) {
         throw new Error('File not found');
       }
 
-      const filePath = path.join(__dirname, '..', 'uploads', file.filename);
-
-      const data = await fs.readFile(filePath);
-      return { data, contentType: file.contentType };
+      return { data: file, contentType: file.contentType };
     } catch (error) {
       console.error('Error in FileService.downloadFile:', error.message);
       throw new Error(`Failed to download file: ${error.message}`);
     }
   }
 
-  async updateFile(userId, fileId, newFile) {
+  async updateFile(_id, fileId, newFile) {
     try {
       const isValidApiKey = await verifyApiKey(apiKey);
       if (!isValidApiKey) {

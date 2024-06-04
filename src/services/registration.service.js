@@ -1,5 +1,5 @@
 import UserModel from '../models/user.model.js';
-import emailService from '../services/email.service.js';
+import { sendConfirmationEmail } from '../services/email.service.js';
 import { generateToken, verifyToken } from '../utils/token.utils.js';
 import bcrypt from 'bcrypt';
 
@@ -15,7 +15,7 @@ class RegistrationService {
         }
     
         try {
-          // Checking for pre-existing users
+          // Check for existing users
           const existingUser = await UserModel.findOne({ email });
           if (existingUser) {
             throw new Error('User already exists');
@@ -27,7 +27,7 @@ class RegistrationService {
           await user.save();
 
           const token = generateToken({ email, role }); // only provide role for supergirl, the default is Kryptonian
-          await emailService.sendConfirmationEmail(email, token);
+          await sendConfirmationEmail(email, token);
     
           return { message: 'Registration successful. Please check your email to confirm.' };
         } catch (error) {

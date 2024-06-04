@@ -1,16 +1,14 @@
 import redis from 'redis';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { REDIS_PASSWORD as password, REDIS_HOST as host, REDIS_PORT as port } from './env.config.js';
 
 let retries = 0;
 const MAX_RETRIES = 3;
 
 const redisClient = redis.createClient({
-    password: process.env.REDIS_PASSWORD,
+    password,
     socket: {
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+        host,
+        port,
     },
     retry_strategy: (options) => {
         if (retries >= MAX_RETRIES) {

@@ -1,108 +1,118 @@
 import fileService from '../services/file.service.js';
+import { sendResponse } from '../utils/response.util.js';
 
 class FileController {
   async upload(req, res) {
-    const apiKey = req.headers['x-api-key'];
-    const { file } = req;
-
-    if (!apiKey) {
-      return res.status(400).json({ error: 'API key is required' });
-    }
-
-    if (!file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
     try {
-      const result = await fileService.upload(apiKey, file);
-      res.status(200).json(result);
-    } catch (error) {
-      console.error('Error in FileController.upload:', error.message);
-      if (error.message === 'Invalid API key') {
-        return res.status(401).json({ error: error.message });
+      const apiKey = req.headers['x-api-key'];
+      const { files } = req;
+
+      if (!apiKey) {
+        return sendResponse(res, 400, false, 'API key is required')
       }
-      if (error.message === 'Invalid file type. Only common image formats allowed.') {
-        return res.status(400).json({ error: error.message });
+
+      if (!files) {
+        return sendResponse(res, 400, false, 'No file uploaded')
       }
-      res.status(500).json({ error: 'Internal Server Error' });
+
+      let result;
+      if (req.body.uploads) {
+
+        for (const upload of req.body.uploads) {
+          result = await fileService.upload(apiKey, upload);
+        }
+      }
+
+      return sendResponse(res, 200, true, result.message, result.images)
+    } catch (e) {
+      console.error('Error in FileController.upload:', e.message);
+      if (e.message === 'Invalid API key') {
+        return sendResponse(res, 400, false, e.message)
+      }
+      if (e.message === 'Invalid file type. Only common image formats allowed.') {
+        return sendResponse(res, 400, false, e.message)
+      }
+      return sendResponse(res, 500, false, 'Internal Server Error')
     }
   }
 
   async download(req, res) {
-    const { _id, fileId } = req.params;
-    const apiKey = req.headers['x-api-key'];
-
-    if (!apiKey) {
-      return res.status(400).json({ error: 'API key is required' });
-    }
-
-    if (!_id || !fileId) {
-      return res.status(400).json({ error: 'User ID and File ID are required' });
-    }
-
     try {
-      const fileData = await fileService.downloadFile(apiKey, _id, fileId);
-      res.set('Content-Type', fileData.contentType);
-      res.send(fileData.data);
-    } catch (error) {
-      console.error('Error in FileController.download:', error.message);
-      if (error.message === 'Invalid API key' || error.message === 'User not found' || error.message === 'File not found') {
-        return res.status(404).json({ error: error.message });
+      const { userId, fileId } = req.params;
+      const apiKey = req.headers['x-api-key'];
+
+      if (!apiKey) {
+        return sendResponse(res, 400, false, 'API key is required')
       }
-      res.status(500).json({ error: 'Internal Server Error' });
+
+      if (!userId || !fileId) {
+        return sendResponse(res, 400, false, 'User ID and File ID are required')
+      }
+
+      const fileData = await fileService.downloadFile(apiKey, userId, fileId);
+      console.log(fileData);
+
+      res.setHeader('Content-Type', fileData.data.contentType)
+      res.send(fileData.data.secure_url)
+    } catch (e) {
+      console.error('Error in FileController.download:', e.message);
+      if (e.message === 'Invalid API key' || e.message === 'User not found' || e.message === 'File not found') {
+        return sendResponse(res, 404, false, e.message)
+      }
+      return sendResponse(res, 500, false, 'Internal Server Error')
     }
   }
 
   async update(req, res) {
-    const { _id, fileId } = req.params;
+    const { userId, fileId } = req.params;
     const apiKey = req.headers['x-api-key'];
-    const { file } = req;
+    const { uploads } = req.body;
 
     if (!apiKey) {
-      return res.status(400).json({ error: 'API key is required' });
+      return sendResponse(res, 400, false, 'API key is required')
     }
 
-    if (!_id || !fileId) {
-      return res.status(400).json({ error: 'User ID and File ID are required' });
+    if (!userId || !fileId) {
+      return sendResponse(res, 400, false, 'User ID and File ID are required')
     }
 
     if (!file) {
-      return res.status(400).json({ error: 'No new file uploaded' });
+      return sendResponse(res, 400, false, 'No new file uploaded')
     }
 
     try {
-      const result = await fileService.updateFile(apiKey, _id, fileId, file);
-      res.status(200).json(result);
-    } catch (error) {
-      console.error('Error in FileController.update:', error.message);
-      if (error.message === 'Invalid API key' || error.message === 'User not found' || error.message === 'File not found') {
-        return res.status(404).json({ error: error.message });
+      const result = await fileService.updateFile(apiKey, userId, fileId, file);
+      return sendResponse(res, 200, true, '', result)
+    } catch (e) {
+      console.error('Error in FileController.update:', e.message);
+      if (e.message === 'Invalid API key' || e.message === 'User not found' || e.message === 'File not found') {
+        return sendResponse(res, 404, false, '', e.message)
       }
-      res.status(500).json({ error: 'Internal Server Error' });
+      return sendResponse(res, 500, false, '', 'Internal Server Error')
     }
   }
 
   async delete(req, res) {
-    const { _id, fileId } = req.params;
+    const { userId, fileId } = req.params;
     const apiKey = req.headers['x-api-key'];
 
     if (!apiKey) {
-      return res.status(400).json({ error: 'API key is required' });
+      return sendResponse(res, 400, false, 'API key is required')
     }
 
-    if (!_id || !fileId) {
-      return res.status(400).json({ error: 'User ID and File ID are required' });
+    if (!userId || !fileId) {
+      return sendResponse(res, 400, false, 'User ID and File ID are required')
     }
 
     try {
-      const result = await fileService.deleteFile(apiKey, _id, fileId);
-      res.status(200).json(result);
-    } catch (error) {
-      console.error('Error in FileController.delete:', error.message);
-      if (error.message === 'Invalid API key' || error.message === 'User not found' || error.message === 'File not found') {
-        return res.status(404).json({ error: error.message });
+      const result = await fileService.deleteFile(apiKey, userId, fileId);
+      return sendResponse(res, 200, true, '', result)
+    } catch (e) {
+      console.error('Error in FileController.delete:', e.message);
+      if (e.message === 'Invalid API key' || e.message === 'User not found' || e.message === 'File not found') {
+        return sendResponse(res, 404, false, '', e.message)
       }
-      res.status(500).json({ error: 'Internal Server Error' });
+      return sendResponse(res, 500, false, '', 'Internal Server Error')
     }
   }
 }

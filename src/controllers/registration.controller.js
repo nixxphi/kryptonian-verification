@@ -12,7 +12,7 @@ class RegistrationController {
         }
     }
 
-    async confirmEmail(req, res) {
+    async verifyEmail(req, res) {
         const { token } = req.params;
 
         try {
